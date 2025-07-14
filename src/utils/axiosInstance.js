@@ -51,6 +51,8 @@ axiosInstance.interceptors.response.use(
 
         case 403:
           console.warn('Forbidden - you do not have access');
+          // ::::::::::::::::::::::::::::::::::::::::::::::::: PUSH TO LOGIN SCREEN
+          router.push("/login");
           break;
 
         case 404:

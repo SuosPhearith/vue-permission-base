@@ -1,8 +1,5 @@
 <template>
-  <div>
-    <h1>Count: {{ counter.count }}</h1>
-    <button @click="counter.increment">Increment</button>
-  </div>
+  <h1 class="text-3xl font-bold underline bg-amber-200">Hello world!</h1>
 </template>
 
 <script setup>

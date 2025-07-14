@@ -1,5 +1,4 @@
 <script setup>
-import { router } from "@/plugins/1.router";
 import { useAuthStore } from "@/stores/auth";
 import axiosInstance from "@/utils/axiosInstance";
 import { themeConfig } from "@themeConfig";
@@ -37,7 +36,7 @@ const handleLogin = async () => {
     //:::::::: ME
     const resMe = await axiosInstance.get("/auth/me");
     authStore.setAuth(resMe.data);
-    router.push("/");
+    window.location.href = "/";
   } catch (error) {
     console.error("Login error:", error);
   } finally {
