@@ -1,1 +1,1 @@
-<template>Product</template>
+<template>Product Page</template>

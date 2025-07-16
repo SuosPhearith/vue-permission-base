@@ -396,6 +396,7 @@ declare module 'vue' {
     TwoFactorAuthDialog: typeof import('./src/components/dialogs/TwoFactorAuthDialog.vue')['default']
     UpdateRoleDialog: typeof import('./src/components/customs/settings/role/UpdateRoleDialog.vue')['default']
     UpdateUserDialog: typeof import('./src/components/customs/user/UpdateUserDialog.vue')['default']
+    UpdateUserPermissionDialog: typeof import('./src/components/customs/user/UpdateUserPermissionDialog.vue')['default']
     UserInfoEditDialog: typeof import('./src/components/dialogs/UserInfoEditDialog.vue')['default']
     UserUpgradePlanDialog: typeof import('./src/components/dialogs/UserUpgradePlanDialog.vue')['default']
   }
