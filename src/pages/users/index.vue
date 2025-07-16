@@ -2,30 +2,10 @@
   <div>
     <ConfirmDialog ref="dialogRef" />
     <v-card>
-      <VCardText class="d-flex flex-wrap gap-4">
-        <VSpacer />
-
-        <div class="app-user-search-filter d-flex align-center flex-wrap gap-4">
-          <!-- 👉 Search  -->
-          <VTextField
-            width="300"
-            v-model="searchQuery"
-            variant="outlined"
-            label="Search User"
-            prepend-inner-icon="tabler-search"
-            clearable
-          />
-
-          <!-- 👉 Add user button -->
-          <VBtn prepend-icon="tabler-plus" @click="dialogCreate = true">
-            Add New User
-          </VBtn>
-        </div>
-      </VCardText>
       <VCardText>
         <VRow>
           <!-- 👉 Select Role -->
-          <VCol cols="12" sm="4">
+          <VCol cols="12" sm="3">
             <VSelect
               v-model="selectedRole"
               :items="roles"
@@ -39,7 +19,7 @@
           </VCol>
 
           <!-- 👉 Select Status -->
-          <VCol cols="12" sm="4">
+          <VCol cols="12" sm="3">
             <VSelect
               v-model="selectedStatus"
               :items="statusOptions"
@@ -50,6 +30,22 @@
               variant="outlined"
               label="Select Status"
             />
+          </VCol>
+
+          <VCol cols="12" sm="4">
+            <VTextField
+              width="300"
+              v-model="searchQuery"
+              variant="outlined"
+              label="Search User"
+              prepend-inner-icon="tabler-search"
+              clearable
+            />
+          </VCol>
+          <VCol cols="12" sm="2">
+            <VBtn prepend-icon="tabler-plus" @click="dialogCreate = true">
+              Add New User
+            </VBtn>
           </VCol>
         </VRow>
       </VCardText>
@@ -130,6 +126,16 @@
                       <VIcon icon="tabler-lock-open-2" />
                     </template>
                     <VListItemTitle>Reset Password</VListItemTitle>
+                  </VListItem>
+                  <VListItem
+                    link
+                    @click="logoutUser(item)"
+                    class="text-warning"
+                  >
+                    <template #prepend>
+                      <VIcon icon="tabler-logout-2" />
+                    </template>
+                    <VListItemTitle>Logout</VListItemTitle>
                   </VListItem>
                   <VListItem link @click="deleteUser(item)" class="text-error">
                     <template #prepend>
@@ -315,7 +321,7 @@ const resetPassword = (user) => {
 const deleteUser = async (user) => {
   const confirm = await dialogRef.value.show({
     title: "Confirm Back",
-    message: "Your data will be lost after back??",
+    message: "Your data will be lost after back?",
     type: "danger",
   });
 
@@ -323,6 +329,26 @@ const deleteUser = async (user) => {
     try {
       pending.value = true;
       await axiosInstance.delete(`/user/${user.id}`);
+      getUsers();
+    } catch (error) {
+      console.error("Error creating user:", error);
+    } finally {
+      pending.value = false;
+    }
+  }
+};
+
+const logoutUser = async (user) => {
+  const confirm = await dialogRef.value.show({
+    title: "Confirm Logout",
+    message: "Are you sure to logout this User?",
+    type: "primary",
+  });
+
+  if (confirm) {
+    try {
+      pending.value = true;
+      await axiosInstance.delete(`/user/${user.id}/logout`);
       getUsers();
     } catch (error) {
       console.error("Error creating user:", error);
