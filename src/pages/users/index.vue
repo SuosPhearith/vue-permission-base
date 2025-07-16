@@ -100,6 +100,12 @@
           </v-chip>
           <v-chip v-else size="small" color="error">Inactive</v-chip>
         </template>
+        <template #item.enable_2fa="{ item }">
+          <v-chip v-if="item.enable_2fa" size="small" color="success">
+            Active
+          </v-chip>
+          <v-chip v-else size="small" color="error">Inactive</v-chip>
+        </template>
 
         <!-- Actions -->
         <template #item.action="{ item }">
@@ -135,6 +141,22 @@
                   </VListItem>
                   <VListItem
                     link
+                    @click="enable2fa(item)"
+                    v-if="!item.enable_2fa"
+                  >
+                    <template #prepend>
+                      <VIcon icon="tabler-shield-lock" />
+                    </template>
+                    <VListItemTitle>Enable 2FA</VListItemTitle>
+                  </VListItem>
+                  <VListItem link @click="disable2fa(item)" v-else>
+                    <template #prepend>
+                      <VIcon icon="tabler-shield-cancel" />
+                    </template>
+                    <VListItemTitle>Disable 2FA</VListItemTitle>
+                  </VListItem>
+                  <VListItem
+                    link
                     @click="logoutUser(item)"
                     class="text-warning"
                   >
@@ -156,6 +178,24 @@
         </template>
       </VDataTableServer>
     </v-card>
+    <VDialog v-model="dialogEnable" width="500">
+      <DialogCloseBtn @click="closeQr" />
+      <VCard title="QR CODE">
+        <VCardText>
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              padding: 16px;
+            "
+          >
+            <QRCodeVue :value="qrCode2fa" :size="200" />
+          </div>
+        </VCardText>
+      </VCard>
+    </VDialog>
+
     <CreateUserDialog v-model="dialogCreate" :refetch-user-list="getUsers" />
     <UpdateUserDialog
       :user-id="updateUserId"
@@ -185,6 +225,7 @@ import CreateUserDialog from "@/components/customs/user/CreateUserDialog.vue";
 import ResetPasswordDialog from "@/components/customs/user/ResetPasswordDialog.vue";
 import UpdateUserDialog from "@/components/customs/user/UpdateUserDialog.vue";
 import UpdateUserPermissionDialog from "@/components/customs/user/UpdateUserPermissionDialog.vue";
+import QRCodeVue from "qrcode.vue";
 
 const headers = [
   {
@@ -208,6 +249,11 @@ const headers = [
     sortable: true,
   },
   {
+    title: "2FA",
+    key: "enable_2fa",
+    sortable: false,
+  },
+  {
     title: "STATUS",
     key: "status",
     sortable: false,
@@ -224,6 +270,8 @@ const loading = ref(false);
 const pending = ref(false);
 const roles = ref([]);
 const users = ref([]);
+const dialogEnable = ref(false);
+const qrCode2fa = ref(null);
 
 const updateUserId = ref(null);
 
@@ -335,6 +383,52 @@ const editPermission = (user) => {
 const resetPassword = (user) => {
   updateUserId.value = user.id;
   dialogReset.value = true;
+};
+
+const enable2fa = async (user) => {
+  const confirm = await dialogRef.value.show({
+    title: "Confirm",
+    message: "Are you sure?",
+    type: "primary",
+  });
+
+  if (confirm) {
+    try {
+      pending.value = true;
+      const res = await axiosInstance.put(`/user/${user.id}/enable-2fa`);
+      qrCode2fa.value = res.data.otpauth_url;
+      dialogEnable.value = true;
+    } catch (error) {
+      console.error("Error creating user:", error);
+    } finally {
+      pending.value = false;
+    }
+  }
+};
+
+const disable2fa = async (user) => {
+  const confirm = await dialogRef.value.show({
+    title: "Confirm",
+    message: "Are you sure?",
+    type: "primary",
+  });
+
+  if (confirm) {
+    try {
+      pending.value = true;
+      await axiosInstance.put(`/user/${user.id}/disable-2fa`);
+      getUsers();
+    } catch (error) {
+      console.error("Error creating user:", error);
+    } finally {
+      pending.value = false;
+    }
+  }
+};
+
+const closeQr = () => {
+  dialogEnable.value = false;
+  getUsers();
 };
 
 const deleteUser = async (user) => {
