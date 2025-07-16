@@ -17,6 +17,13 @@
             </v-col>
             <v-col cols="12">
               <v-text-field
+                :rules="[requiredValidator]"
+                label="Phone Number"
+                v-model="phoneNumber"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12">
+              <v-text-field
                 label="Email"
                 :rules="[requiredValidator, emailValidator]"
                 v-model="email"
@@ -115,6 +122,7 @@ watch(isDialogVisible, (newValue, oldValue) => {
 //::::::::::::::::::::::::::::::::::::: STATES
 const form = ref();
 const name = ref("");
+const phoneNumber = ref("");
 const email = ref("");
 const password = ref("");
 const cPassword = ref("");
@@ -148,6 +156,7 @@ const setup = async () => {
 
 const resetForm = () => {
   name.value = "";
+  phoneNumber.value = "";
   email.value = "";
   password.value = "";
   cPassword.value = "";
@@ -167,6 +176,7 @@ const handleCreate = async () => {
     try {
       const userData = {
         name: name.value,
+        phone_number: phoneNumber.value,
         email: email.value,
         password: password.value,
         role_id: role.value,

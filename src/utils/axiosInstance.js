@@ -1,9 +1,11 @@
 import { router } from '@/plugins/1.router';
 import axios from 'axios';
 
+console.log('process.env.NEXT_PUBLIC_API_BASE_URL',process.env.NEXT_PUBLIC_API_BASE_URL);
+
 // Create Axios instance
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api/v1',
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://192.168.0.172:8000/api/v1',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

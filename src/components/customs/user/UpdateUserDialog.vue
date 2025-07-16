@@ -17,6 +17,13 @@
             </v-col>
             <v-col cols="12">
               <v-text-field
+                :rules="[requiredValidator]"
+                label="Phone Number"
+                v-model="phoneNumber"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12">
+              <v-text-field
                 label="Email"
                 :rules="[requiredValidator, emailValidator]"
                 v-model="email"
@@ -27,7 +34,7 @@
                 :disabled="loading"
                 label="Role"
                 :items="roles"
-                :rules="[requiredValidator]"
+                :rules="[]"
                 item-title="name"
                 item-value="id"
                 clearable
@@ -103,6 +110,7 @@ watch(isDialogVisible, (newValue, oldValue) => {
 //::::::::::::::::::::::::::::::::::::: STATES
 const form = ref();
 const name = ref("");
+const phoneNumber = ref("");
 const email = ref("");
 const role = ref(null);
 
@@ -118,6 +126,7 @@ const setup = async () => {
     const res = await axiosInstance.get("/setting/setup?select=role");
     const resUser = await axiosInstance.get(`/user/${props.userId}`);
     name.value = resUser.data.data.name;
+    phoneNumber.value = resUser.data.data.phone_number;
     email.value = resUser.data.data.email;
     role.value = resUser.data.data.roles;
     roles.value = res.data.data.roles;
@@ -130,6 +139,7 @@ const setup = async () => {
 
 const resetForm = () => {
   name.value = "";
+  phoneNumber.value = "";
   email.value = "";
   role.value = null;
 
@@ -147,6 +157,7 @@ const handleCreate = async () => {
     try {
       const userData = {
         name: name.value,
+        phone_number: phoneNumber.value,
         email: email.value,
         role_id: role.value,
       };

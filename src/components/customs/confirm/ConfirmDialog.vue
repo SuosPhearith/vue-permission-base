@@ -68,7 +68,11 @@ const iconConfig = computed(() => {
 const confirmButtonConfig = computed(() => {
   switch (type.value) {
     case "danger":
-      return { text: "Delete", color: "#dc2626", bgColor: "#dc2626" };
+      return {
+        text: "Delete",
+        color: "#dc2626",
+        bgColor: "rgba(220, 38, 38, 0.1)",
+      };
     case "warning":
       return { text: "Continue", color: "#d97706", bgColor: "#d97706" };
     case "success":

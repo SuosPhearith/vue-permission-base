@@ -12,8 +12,8 @@ definePage({
 
 // :::::::::::::::::::::::::::::::::::::::::::::::::::: STATES
 const form = ref({
-  email: "",
-  password: "",
+  login: "suosphearith@gmail.com",
+  password: "123456",
 });
 
 const isPasswordVisible = ref(false);
@@ -27,7 +27,7 @@ const handleLogin = async () => {
 
   try {
     const loginData = {
-      email: form.value.email,
+      login: form.value.login,
       password: form.value.password,
     };
     //:::::::: LOGIN
@@ -72,11 +72,10 @@ watch(
               <!-- email -->
               <VCol cols="12">
                 <AppTextField
-                  v-model="form.email"
+                  v-model="form.login"
                   autofocus
-                  label="Email or Username"
-                  type="email"
-                  placeholder="johndoe@email.com"
+                  label="Email or Phone Number"
+                  placeholder=""
                   :disabled="isLoading"
                   required
                 />
@@ -108,7 +107,7 @@ watch(
                   block
                   type="submit"
                   :loading="isLoading"
-                  :disabled="!form.email || !form.password"
+                  :disabled="!form.login || !form.password"
                 >
                   Login
                 </VBtn>

@@ -119,7 +119,13 @@
                     <template #prepend>
                       <VIcon icon="tabler-pencil" />
                     </template>
-                    <VListItemTitle>Edit</VListItemTitle>
+                    <VListItemTitle>Edit User</VListItemTitle>
+                  </VListItem>
+                  <VListItem link @click="editPermission(item)">
+                    <template #prepend>
+                      <VIcon icon="tabler-user-cog" />
+                    </template>
+                    <VListItemTitle>Edit Permission</VListItemTitle>
                   </VListItem>
                   <VListItem link @click="resetPassword(item)">
                     <template #prepend>
@@ -156,6 +162,11 @@
       v-model="dialogUpdate"
       :refetch-user-list="getUsers"
     />
+    <UpdateUserPermissionDialog
+      :user-id="updateUserId"
+      v-model="dialogUpdatePermission"
+      :refetch-user-list="getUsers"
+    />
     <ResetPasswordDialog
       :user-id="updateUserId"
       v-model="dialogReset"
@@ -173,6 +184,7 @@ import ConfirmDialog from "@/components/customs/confirm/ConfirmDialog.vue";
 import CreateUserDialog from "@/components/customs/user/CreateUserDialog.vue";
 import ResetPasswordDialog from "@/components/customs/user/ResetPasswordDialog.vue";
 import UpdateUserDialog from "@/components/customs/user/UpdateUserDialog.vue";
+import UpdateUserPermissionDialog from "@/components/customs/user/UpdateUserPermissionDialog.vue";
 
 const headers = [
   {
@@ -219,6 +231,7 @@ const updateUserId = ref(null);
 const dialogRef = ref();
 const dialogCreate = ref(false);
 const dialogUpdate = ref(false);
+const dialogUpdatePermission = ref(false);
 const dialogReset = ref(false);
 
 //:::::::::::::::::::::::: TABLE & PAGINATION
@@ -311,6 +324,12 @@ const toggleStatus = async (id) => {
 const editUser = (user) => {
   updateUserId.value = user.id;
   dialogUpdate.value = true;
+};
+
+const editPermission = (user) => {
+  console.log("userrrr", user);
+  updateUserId.value = user.id;
+  dialogUpdatePermission.value = true;
 };
 
 const resetPassword = (user) => {
