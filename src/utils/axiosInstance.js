@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Create Axios instance
 const axiosInstance = axios.create({
-  baseURL: process.env.VITE_API_URL || 'http://localhost:8000/api/v1',
+  baseURL: process.env.VITE_API_URL || 'http://192.168.0.172:8000/api/v1',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

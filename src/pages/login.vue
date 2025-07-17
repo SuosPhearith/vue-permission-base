@@ -17,7 +17,7 @@ definePage({
 
 // :::::::::::::::::::::::::::::::::::::::::::::::::::: STATES
 const form = ref({
-  login: "suosphearith@gmail.com",
+  login: "rotha@gmail.com",
   password: "123456",
 });
 

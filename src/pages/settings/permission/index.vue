@@ -1,19 +1,36 @@
 <template>
-  <VCard title="Permission Management" :loading="loading">
+  <VCard title="" :loading="loading">
+    <div class="flex align-center justify-between mx-6">
+      <h6 class="text-lg">Permission Management</h6>
+      <VBtn prepend-icon="tabler-plus" @click="dialogCreate = true">
+        Add Module
+      </VBtn>
+    </div>
     <VCardText>
       <div v-if="permissions.length > 0">
         <div v-for="module in permissions" :key="module.id" class="mb-6">
           <h6
-            class="text-h6 mb-3 d-flex align-center justify-between border rounded-md px-3"
+            class="text-[16px] mb-3 d-flex align-center justify-between border rounded-md px-3 text-bold"
           >
             <span>{{ module.name }}</span>
-            <VSwitch
-              :model-value="module.is_active"
-              @change="toggleModuleActive(module)"
-              color="success"
-              hide-details
-              inset
-            />
+            <div class="flex items-center">
+              <VBtn
+                class="mr-4"
+                prepend-icon="tabler-plus "
+                size="small"
+                color="success"
+                @click="onCreatePermissionDialog(module)"
+              >
+                Add Permission
+              </VBtn>
+              <VSwitch
+                :model-value="module.is_active"
+                @change="toggleModuleActive(module)"
+                color="success"
+                hide-details
+                inset
+              />
+            </div>
           </h6>
 
           <VRow class="">
@@ -41,10 +58,9 @@
                   @change="togglePermissionActive(permission)"
                   :disabled="!module.is_active"
                   :loading="pending"
-                  color="success"
+                  color="primary"
                   hide-details
                   inset
-                  size="small"
                 />
               </div>
             </VCol>
@@ -63,16 +79,27 @@
       </div>
     </VCardText>
   </VCard>
+  <CreateModuleDialog v-model="dialogCreate" :refetch-list="getPermission" />
+  <CreatePermissionDialog
+    v-model="dialogPermission"
+    :refetch-list="getPermission"
+    :module-id="moduleID"
+  />
 </template>
 
 <script setup>
+import CreateModuleDialog from "@/components/customs/settings/permission/CreateModuleDialog.vue";
+import CreatePermissionDialog from "@/components/customs/settings/permission/CreatePermissionDialog.vue";
 import axiosInstance from "@/utils/axiosInstance";
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::: STATES
 const permissions = ref([]);
 const originalPermissions = ref([]);
+const dialogCreate = ref(false);
+const dialogPermission = ref(false);
 const loading = ref(false);
 const pending = ref(false);
+const moduleID = ref(null);
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::: FUNCTIONS
 const getPermission = async () => {
@@ -113,6 +140,11 @@ const toggleModuleActive = async (module) => {
 
 const formatPermissionName = (name) => {
   return name.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+};
+
+const onCreatePermissionDialog = (value) => {
+  moduleID.value = value.id;
+  dialogPermission.value = true;
 };
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::: INITIAL
