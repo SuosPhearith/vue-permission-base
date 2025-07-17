@@ -56,6 +56,7 @@ declare global {
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
   const h: typeof import('vue')['h']
+  const hasPermission: typeof import('./src/utils/hasPermission.js')['hasPermission']
   const hexToRgb: typeof import('./src/@core/utils/colorConverter.js')['hexToRgb']
   const ignorableWatch: typeof import('@vueuse/core')['ignorableWatch']
   const inject: typeof import('vue')['inject']
@@ -296,6 +297,7 @@ declare global {
   const useShare: typeof import('@vueuse/core')['useShare']
   const useSkins: typeof import('./src/@core/composable/useSkins.js')['useSkins']
   const useSlots: typeof import('vue')['useSlots']
+  const useSnackbar: typeof import('./src/composables/useSnackbar.js')['default']
   const useSorted: typeof import('@vueuse/core')['useSorted']
   const useSpeechRecognition: typeof import('@vueuse/core')['useSpeechRecognition']
   const useSpeechSynthesis: typeof import('@vueuse/core')['useSpeechSynthesis']
@@ -417,6 +419,7 @@ declare module 'vue' {
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
+    readonly hasPermission: UnwrapRef<typeof import('./src/utils/hasPermission.js')['hasPermission']>
     readonly hexToRgb: UnwrapRef<typeof import('./src/@core/utils/colorConverter.js')['hexToRgb']>
     readonly ignorableWatch: UnwrapRef<typeof import('@vueuse/core')['ignorableWatch']>
     readonly inject: UnwrapRef<typeof import('vue')['inject']>
@@ -657,6 +660,7 @@ declare module 'vue' {
     readonly useShare: UnwrapRef<typeof import('@vueuse/core')['useShare']>
     readonly useSkins: UnwrapRef<typeof import('./src/@core/composable/useSkins.js')['useSkins']>
     readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
+    readonly useSnackbar: UnwrapRef<typeof import('./src/composables/useSnackbar.js')['default']>
     readonly useSorted: UnwrapRef<typeof import('@vueuse/core')['useSorted']>
     readonly useSpeechRecognition: UnwrapRef<typeof import('@vueuse/core')['useSpeechRecognition']>
     readonly useSpeechSynthesis: UnwrapRef<typeof import('@vueuse/core')['useSpeechSynthesis']>

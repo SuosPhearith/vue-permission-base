@@ -99,12 +99,6 @@
                     </template>
                     <VListItemTitle>Edit</VListItemTitle>
                   </VListItem>
-                  <VListItem link @click="resetPassword(item)">
-                    <template #prepend>
-                      <VIcon icon="tabler-lock-open-2" />
-                    </template>
-                    <VListItemTitle>Reset Password</VListItemTitle>
-                  </VListItem>
                   <VListItem link @click="deleteRole(item)" class="text-error">
                     <template #prepend>
                       <VIcon icon="tabler-trash" />

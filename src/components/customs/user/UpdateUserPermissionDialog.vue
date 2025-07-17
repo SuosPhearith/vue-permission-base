@@ -119,6 +119,7 @@ watch(isDialogVisible, (newValue, oldValue) => {
 const permissions = ref([]);
 const selectedPermissions = ref([]);
 const selectedNewPermissions = ref([]);
+const lastRolePermissions = ref([]); // Track permissions of the last selected role
 const role = ref([]);
 const loading = ref(false);
 const pending = ref(false);
@@ -167,19 +168,23 @@ const getRole = async () => {
     console.log("Error Get Role Permission", error);
   }
 };
+
 const onRoleSelected = async (value) => {
   if (value === null) {
     try {
       const res = await axiosInstance.get(
         `/user/${props.userId}/get-user-permission`
       );
-
-      selectedNewPermissions.value = res?.data?.data?.user_permissions;
-    } catch (error) {}
+      selectedNewPermissions.value = res?.data?.data?.user_permissions || [];
+    } catch (error) {
+      console.error("Error fetching permissions:", error);
+    }
   } else {
-    selectedNewPermissions.value = value.permission_ids;
+    // Append value.permission_ids and remove duplicates
+    selectedNewPermissions.value = [
+      ...new Set([...selectedNewPermissions.value, ...value.permission_ids]),
+    ];
   }
-  // You can do something with the value here
 };
 
 const handleUpdate = async () => {

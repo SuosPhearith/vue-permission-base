@@ -8,8 +8,13 @@
     bordered
     color="success"
   >
-    <VAvatar class="cursor-pointer" color="primary" variant="tonal">
-      <VImg :src="avatar1" />
+    <VAvatar class="cursor-pointer" color="" variant="tonal">
+      <img
+        :src="`${fileUrl}${authUser.avatar}`"
+        alt="profile"
+        v-if="authUser.avatar"
+      />
+      <v-icon v-else>tabler-user</v-icon>
 
       <!-- SECTION Menu -->
       <VMenu activator="parent" width="230" location="bottom end" offset="14px">
@@ -25,8 +30,13 @@
                   offset-y="3"
                   color="success"
                 >
-                  <VAvatar color="primary" variant="tonal">
-                    <VImg :src="avatar1" />
+                  <VAvatar color="" variant="tonal">
+                    <img
+                      :src="`${fileUrl}${authUser.avatar}`"
+                      alt="profile"
+                      v-if="authUser.avatar"
+                    />
+                    <v-icon v-else>tabler-user</v-icon>
                   </VAvatar>
                 </VBadge>
               </VListItemAction>
@@ -41,39 +51,12 @@
           <VDivider class="my-2" />
 
           <!-- 👉 Profile -->
-          <VListItem link>
+          <VListItem link @click="navigate">
             <template #prepend>
               <VIcon class="me-2" icon="tabler-user" size="22" />
             </template>
 
-            <VListItemTitle>Profile</VListItemTitle>
-          </VListItem>
-
-          <!-- 👉 Settings -->
-          <VListItem link>
-            <template #prepend>
-              <VIcon class="me-2" icon="tabler-settings" size="22" />
-            </template>
-
-            <VListItemTitle>Settings</VListItemTitle>
-          </VListItem>
-
-          <!-- 👉 Pricing -->
-          <VListItem link>
-            <template #prepend>
-              <VIcon class="me-2" icon="tabler-currency-dollar" size="22" />
-            </template>
-
-            <VListItemTitle>Pricing</VListItemTitle>
-          </VListItem>
-
-          <!-- 👉 FAQ -->
-          <VListItem link>
-            <template #prepend>
-              <VIcon class="me-2" icon="tabler-help" size="22" />
-            </template>
-
-            <VListItemTitle>FAQ</VListItemTitle>
+            <VListItemTitle>Account</VListItemTitle>
           </VListItem>
 
           <!-- Divider -->
@@ -84,7 +67,8 @@
             <VBtn
               class="w-full"
               @click="logoutUser(authUser?.id)"
-              color="error"
+              variant="outlined"
+              color="primary"
             >
               <template #prepend>
                 <VIcon class="me-2" icon="tabler-logout" size="22" />
@@ -101,19 +85,25 @@
 
 <script setup>
 // Import VueJS
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 
 // Import Assets
 import ConfirmDialog from "@/components/customs/confirm/ConfirmDialog.vue";
-import avatar1 from "@images/avatars/avatar-1.png";
+import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "vue-router";
 
-const authUser = ref(null);
-const dialogRef = ref();
+const router = useRouter();
 
-const getUserAuth = async () => {
-  const res = await axiosInstance.get(`/auth/me`);
-  authUser.value = res.data.user;
+const navigate = () => {
+  router.push("/account");
 };
+
+const auth = useAuthStore();
+
+const fileUrl = import.meta.env.VITE_FILE_URL;
+
+const authUser = ref(auth.user);
+const dialogRef = ref();
 
 const logoutUser = async (userId) => {
   const confirm = await dialogRef.value.show({
@@ -132,12 +122,4 @@ const logoutUser = async (userId) => {
     }
   }
 };
-
-onMounted(async () => {
-  try {
-    await Promise.all([getUserAuth()]);
-  } catch (error) {
-    console.error("Error during initialization:", error);
-  }
-});
 </script>

@@ -9,6 +9,9 @@ import axiosInstance from "./utils/axiosInstance";
 import Loading from "./components/customs/Loading.vue";
 import { useAuthStore } from "./stores/auth";
 
+import useSnackbar from "@/composables/useSnackbar";
+const { show, message, color } = useSnackbar();
+
 const { global } = useTheme();
 
 // ℹ️ Sync current theme with initial loader theme
@@ -45,6 +48,14 @@ onMounted(async () => {
       )}`"
       v-if="!loading"
     >
+      <VSnackbar
+        v-model="show"
+        :color="color"
+        timeout="3000"
+        location="bottom right"
+      >
+        {{ message }}
+      </VSnackbar>
       <RouterView />
 
       <ScrollToTop />
