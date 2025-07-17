@@ -1,4 +1,5 @@
 <template>
+  <ConfirmDialog ref="dialogRef" />
   <VCard title="" :loading="loading">
     <div class="flex align-center justify-between mx-6">
       <h6 class="text-lg">Permission Management</h6>
@@ -8,21 +9,18 @@
     </div>
     <VCardText>
       <div v-if="permissions.length > 0">
-        <div v-for="module in permissions" :key="module.id" class="mb-6">
-          <h6
-            class="text-[16px] mb-3 d-flex align-center justify-between border rounded-md px-3 text-bold"
+        <div v-for="module in permissions" :key="module.id" class="mb-8">
+          <!-- Module Header -->
+          <div
+            class="d-flex align-center justify-between border rounded-md px-4 mb-4 bg-grey-50"
           >
-            <span>{{ module.name }}</span>
-            <div class="flex items-center">
-              <VBtn
-                class="mr-4"
-                prepend-icon="tabler-plus "
-                size="small"
-                color="success"
-                @click="onCreatePermissionDialog(module)"
-              >
-                Add Permission
-              </VBtn>
+            <div class="d-flex align-center">
+              <VIcon icon="tabler-folder" class="mr-2 text-primary" size="20" />
+              <h6 class="text-[16px] text-bold text-primary">
+                {{ module.name }}
+              </h6>
+            </div>
+            <div class="d-flex align-center gap-1">
               <VSwitch
                 :model-value="module.is_active"
                 @change="toggleModuleActive(module)"
@@ -30,41 +28,89 @@
                 hide-details
                 inset
               />
+              <VBtn
+                icon="tabler-trash"
+                variant="text"
+                color="error"
+                @click="deleteModule(module)"
+              />
             </div>
-          </h6>
+          </div>
 
-          <VRow class="">
-            <VCol
-              v-for="permission in module.permissions"
-              :key="permission.id"
-              cols="12"
-              md="6"
-              lg="4"
-            >
-              <div
-                class="d-flex align-center justify-between px-3 border rounded"
+          <!-- Permissions Grid -->
+          <div class="">
+            <VRow class="">
+              <VCol
+                v-for="permission in module.permissions"
+                :key="permission.id"
+                cols="12"
+                md="6"
+                lg="4"
               >
-                <VTooltip>
-                  <template #activator="{ props }">
-                    <span v-bind="props" class="text-body-2">
-                      {{ formatPermissionName(permission.name) }}
-                    </span>
-                  </template>
-                  <span>{{ permission.name }}</span>
-                </VTooltip>
+                <div
+                  class="d-flex align-center justify-between px-3 border rounded-md"
+                  :class="{ 'opacity-60': !module.is_active }"
+                >
+                  <VTooltip>
+                    <template #activator="{ props }">
+                      <div class="d-flex align-center">
+                        <VIcon
+                          icon="tabler-key"
+                          class="mr-2 text-grey-500"
+                          size="16"
+                        />
+                        <span v-bind="props" class="text-body-2">
+                          {{ formatPermissionName(permission.name) }}
+                        </span>
+                      </div>
+                    </template>
+                    <span>{{ permission.name }}</span>
+                  </VTooltip>
 
-                <VSwitch
-                  :model-value="permission.is_active"
-                  @change="togglePermissionActive(permission)"
+                  <div class="d-flex align-center gap-1">
+                    <VSwitch
+                      :model-value="permission.is_active"
+                      @change="togglePermissionActive(permission)"
+                      :disabled="!module.is_active"
+                      :loading="pending"
+                      color="primary"
+                      hide-details
+                      inset
+                    />
+                    <VBtn
+                      icon="tabler-trash"
+                      variant="text"
+                      color="error"
+                      @click="deletePermission(permission)"
+                    />
+                  </div>
+                </div>
+              </VCol>
+
+              <!-- Add Permission Button at the end of each module -->
+              <VCol cols="12" md="6" lg="4">
+                <div
+                  class="d-flex align-center justify-center px-3 py-1 border-2 border-dashed border-grey-300 rounded-md bg-grey-25 hover:border-success hover:bg-success-50 transition-all duration-200 cursor-pointer"
+                  @click="onCreatePermissionDialog(module)"
+                  :class="{
+                    'opacity-50 cursor-not-allowed': !module.is_active,
+                  }"
                   :disabled="!module.is_active"
-                  :loading="pending"
-                  color="primary"
-                  hide-details
-                  inset
-                />
-              </div>
-            </VCol>
-          </VRow>
+                >
+                  <VBtn
+                    prepend-icon="tabler-plus"
+                    variant="text"
+                    color="success"
+                    size="small"
+                    :disabled="!module.is_active"
+                    @click="onCreatePermissionDialog(module)"
+                  >
+                    Add Permission
+                  </VBtn>
+                </div>
+              </VCol>
+            </VRow>
+          </div>
         </div>
       </div>
 
@@ -88,9 +134,11 @@
 </template>
 
 <script setup>
+import ConfirmDialog from "@/components/customs/confirm/ConfirmDialog.vue";
 import CreateModuleDialog from "@/components/customs/settings/permission/CreateModuleDialog.vue";
 import CreatePermissionDialog from "@/components/customs/settings/permission/CreatePermissionDialog.vue";
 import axiosInstance from "@/utils/axiosInstance";
+import { ref } from "vue";
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::: STATES
 const permissions = ref([]);
@@ -100,6 +148,7 @@ const dialogPermission = ref(false);
 const loading = ref(false);
 const pending = ref(false);
 const moduleID = ref(null);
+const dialogRef = ref();
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::: FUNCTIONS
 const getPermission = async () => {
@@ -135,6 +184,44 @@ const toggleModuleActive = async (module) => {
     console.error("Error fetching modules:", error);
   } finally {
     pending.value = false;
+  }
+};
+
+const deleteModule = async (module) => {
+  const confirm = await dialogRef.value.show({
+    title: "Confirm",
+    message: "Are you sure?",
+    type: "danger",
+  });
+  if (confirm) {
+    pending.value = true;
+    try {
+      await axiosInstance.delete(`/setting/module/${module.id}`);
+      getPermission();
+    } catch (error) {
+      console.error("Error fetching modules:", error);
+    } finally {
+      pending.value = false;
+    }
+  }
+};
+
+const deletePermission = async (permission) => {
+  const confirm = await dialogRef.value.show({
+    title: "Confirm",
+    message: "Are you sure?",
+    type: "danger",
+  });
+  if (confirm) {
+    pending.value = true;
+    try {
+      await axiosInstance.delete(`/setting/permission/${permission.id}`);
+      getPermission();
+    } catch (error) {
+      console.error("Error fetching permissions:", error);
+    } finally {
+      pending.value = false;
+    }
   }
 };
 

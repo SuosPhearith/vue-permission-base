@@ -5,8 +5,8 @@
       v-if="!pending"
     />
     <VCard title="Create new Permissions" :loading="loading">
-      <VCardText>
-        <VForm ref="form" lazy-validation>
+      <VForm ref="form" lazy-validation @submit.prevent="handleCreate">
+        <VCardText>
           <v-row>
             <v-col cols="12">
               <div
@@ -42,25 +42,25 @@
               </VBtn>
             </v-col>
           </v-row>
-        </VForm>
-      </VCardText>
+        </VCardText>
 
-      <VCardText class="d-flex justify-end gap-3 flex-wrap">
-        <VBtn
-          color="secondary"
-          variant="tonal"
-          @click="isDialogVisible = false"
-          :disabled="pending"
-        >
-          Cancel
-        </VBtn>
-        <VBtn @click="handleCreate" :disabled="pending || !isFormValid">
-          <template v-if="pending">
-            <VProgressCircular indeterminate color="primary" size="20" />
-          </template>
-          <template v-else> Create </template>
-        </VBtn>
-      </VCardText>
+        <VCardText class="d-flex justify-end gap-3 flex-wrap">
+          <VBtn
+            color="secondary"
+            variant="tonal"
+            @click="isDialogVisible = false"
+            :disabled="pending"
+          >
+            Cancel
+          </VBtn>
+          <VBtn @click="handleCreate" :disabled="pending || !isFormValid">
+            <template v-if="pending">
+              <VProgressCircular indeterminate color="primary" size="20" />
+            </template>
+            <template v-else> Create </template>
+          </VBtn>
+        </VCardText>
+      </VForm>
     </VCard>
   </VDialog>
 </template>

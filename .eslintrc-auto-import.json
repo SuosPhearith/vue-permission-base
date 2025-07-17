@@ -361,6 +361,8 @@
     "watchWithFilter": true,
     "whenever": true,
     "axiosInstance": true,
-    "formatDateDDMMYYHHMM": true
+    "formatDateDDMMYYHHMM": true,
+    "hasPermission": true,
+    "useSnackbar": true
   }
 }

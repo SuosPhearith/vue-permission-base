@@ -15,27 +15,29 @@ import { VerticalNavLayout } from "@layouts";
   <VerticalNavLayout :nav-items="navItems">
     <!-- 👉 navbar -->
     <template #navbar="{ toggleVerticalOverlayNavActive }">
-      <div class="d-flex h-100 align-center">
-        <IconBtn
-          id="vertical-nav-toggle-btn"
-          class="ms-n3 d-lg-none"
-          @click="toggleVerticalOverlayNavActive(true)"
-        >
-          <VIcon size="26" icon="tabler-menu-2" />
-        </IconBtn>
+      <div class="d-flex h-100 align-center justify-between">
+        <div>
+          <IconBtn
+            id="vertical-nav-toggle-btn"
+            class="ms-n3 d-lg-none"
+            @click="toggleVerticalOverlayNavActive(true)"
+          >
+            <VIcon size="26" icon="tabler-menu-2" />
+          </IconBtn>
+        </div>
 
-        <NavbarThemeSwitcher />
+        <div class="flex justify-center items-center gap-2">
+          <NavbarThemeSwitcher />
 
-        <VSpacer />
-
-        <NavBarI18n
-          v-if="
-            themeConfig.app.i18n.enable &&
-            themeConfig.app.i18n.langConfig?.length
-          "
-          :languages="themeConfig.app.i18n.langConfig"
-        />
-        <UserProfile />
+          <NavBarI18n
+            v-if="
+              themeConfig.app.i18n.enable &&
+              themeConfig.app.i18n.langConfig?.length
+            "
+            :languages="themeConfig.app.i18n.langConfig"
+          />
+          <UserProfile />
+        </div>
       </div>
     </template>
 
