@@ -5,6 +5,8 @@ import authV1BottomShape from "@images/svg/auth-v1-bottom-shape.svg?raw";
 import authV1TopShape from "@images/svg/auth-v1-top-shape.svg?raw";
 import { VNodeRenderer } from "@layouts/components/VNodeRenderer";
 import { themeConfig } from "@themeConfig";
+import { useRouter } from "vue-router";
+const router = useRouter();
 
 definePage({
   meta: {
@@ -37,20 +39,25 @@ const handleLogin = async () => {
       login: form.value.login,
       password: form.value.password,
     };
-    //:::::::: LOGIN
+
     const resLogin = await axiosInstance.post("/auth/login", loginData);
-    if (resLogin.data.verify === true) {
+    const { access_token, verify, two_factor_key } = resLogin.data;
+
+    // Store token
+    window.localStorage.setItem("token", access_token);
+
+    // Fetch user info
+    const resMe = await axiosInstance.get("/auth/me");
+    authStore.setAuth(resMe.data);
+
+    if (verify === true) {
       showVerification.value = true;
-      twoFactorKey.value = resLogin.data.two_factor_key;
+      twoFactorKey.value = two_factor_key;
     } else {
-      window.localStorage.setItem("token", resLogin.data.access_token);
-      //:::::::: ME
-      const resMe = await axiosInstance.get("/auth/me");
-      authStore.setAuth(resMe.data);
       window.location.href = "/";
     }
   } catch (error) {
-    console.error("Login error:", error);
+    console.error("Login error:", error?.response?.data || error.message);
   } finally {
     isLoading.value = false;
   }
