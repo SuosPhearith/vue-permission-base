@@ -26,7 +26,11 @@
               class="me-3"
               style="max-width: 300px"
             />
-            <VBtn prepend-icon="tabler-plus" @click="dialogCreate = true">
+            <VBtn
+              prepend-icon="tabler-plus"
+              @click="dialogCreate = true"
+              v-if="hasPermission('create-role-setting')"
+            >
               Add New Role
             </VBtn>
           </VCol>
@@ -65,11 +69,11 @@
         </template>
 
         <template #item.created_at="{ item }">
-          <span>{{ formatDateDDMMYYHHMM(item.created_at) }}</span>
+          <span>{{ formatDateBySelectedFormat(item.created_at) }}</span>
         </template>
 
         <template #item.updated_at="{ item }">
-          <span>{{ formatDateDDMMYYHHMM(item.updated_at) }}</span>
+          <span>{{ formatDateBySelectedFormat(item.updated_at) }}</span>
         </template>
 
         <template #item.status="{ item }">
@@ -83,6 +87,7 @@
         <template #item.action="{ item }">
           <div class="d-flex align-center gap-2">
             <VSwitch
+              v-if="hasPermission('toggle-role-setting')"
               v-model="item.is_active"
               :loading="pending"
               @change="toggleStatus(item?.id)"
@@ -93,13 +98,22 @@
               <VIcon icon="tabler-dots-vertical" />
               <VMenu activator="parent">
                 <VList>
-                  <VListItem link @click="editRole(item)">
+                  <VListItem
+                    link
+                    @click="editRole(item)"
+                    v-if="hasPermission('update-role-setting')"
+                  >
                     <template #prepend>
                       <VIcon icon="tabler-pencil" />
                     </template>
                     <VListItemTitle>Edit</VListItemTitle>
                   </VListItem>
-                  <VListItem link @click="deleteRole(item)" class="text-error">
+                  <VListItem
+                    link
+                    @click="deleteRole(item)"
+                    class="text-error"
+                    v-if="hasPermission('delete-role-setting')"
+                  >
                     <template #prepend>
                       <VIcon icon="tabler-trash" />
                     </template>
@@ -123,12 +137,13 @@
 
 <script setup>
 import axiosInstance from "@/utils/axiosInstance";
-import { formatDateDDMMYYHHMM } from "@/utils/format";
+import { formatDateBySelectedFormat } from "@/utils/format";
 import { onMounted, ref, watch } from "vue";
 
 import ConfirmDialog from "@/components/customs/confirm/ConfirmDialog.vue";
 import CreateRoleDialog from "@/components/customs/settings/role/CreateRoleDialog.vue";
 import UpdateRoleDialog from "@/components/customs/settings/role/UpdateRoleDialog.vue";
+import { hasPermission } from "@/utils/hasPermission";
 
 const headers = [
   {

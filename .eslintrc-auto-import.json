@@ -363,6 +363,9 @@
     "axiosInstance": true,
     "formatDateDDMMYYHHMM": true,
     "hasPermission": true,
-    "useSnackbar": true
+    "useSnackbar": true,
+    "formatDateBySelectedFormat": true,
+    "formatDateDDMMSlashYYHHMM": true,
+    "formatDateYYMMDDHHMM": true
   }
 }
