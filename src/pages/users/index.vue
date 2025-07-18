@@ -43,7 +43,11 @@
             />
           </VCol>
           <VCol cols="12" sm="2">
-            <VBtn prepend-icon="tabler-plus" @click="dialogCreate = true">
+            <VBtn
+              prepend-icon="tabler-plus"
+              @click="dialogCreate = true"
+              v-if="hasPermission('create-users')"
+            >
               Add New User
             </VBtn>
           </VCol>
@@ -87,11 +91,11 @@
         </template>
 
         <template #item.created_at="{ item }">
-          <span>{{ formatDateDDMMYYHHMM(item.created_at) }}</span>
+          <span>{{ formatDateBySelectedFormat(item.created_at) }}</span>
         </template>
 
         <template #item.updated_at="{ item }">
-          <span>{{ formatDateDDMMYYHHMM(item.updated_at) }}</span>
+          <span>{{ formatDateBySelectedFormat(item.updated_at) }}</span>
         </template>
 
         <template #item.status="{ item }">
@@ -111,6 +115,7 @@
         <template #item.action="{ item }">
           <div class="d-flex align-center gap-2">
             <VSwitch
+              v-if="hasPermission('ban-users')"
               v-model="item.is_active"
               :loading="pending"
               @change="toggleStatus(item?.id)"
@@ -121,19 +126,31 @@
               <VIcon icon="tabler-dots-vertical" />
               <VMenu activator="parent">
                 <VList>
-                  <VListItem link @click="editUser(item)">
+                  <VListItem
+                    link
+                    @click="editUser(item)"
+                    v-if="hasPermission('edit-users')"
+                  >
                     <template #prepend>
                       <VIcon icon="tabler-pencil" />
                     </template>
                     <VListItemTitle>Edit User</VListItemTitle>
                   </VListItem>
-                  <VListItem link @click="editPermission(item)">
+                  <VListItem
+                    link
+                    @click="editPermission(item)"
+                    v-if="hasPermission('update-permission-users')"
+                  >
                     <template #prepend>
                       <VIcon icon="tabler-user-cog" />
                     </template>
                     <VListItemTitle>Edit Permission</VListItemTitle>
                   </VListItem>
-                  <VListItem link @click="resetPassword(item)">
+                  <VListItem
+                    link
+                    @click="resetPassword(item)"
+                    v-if="hasPermission('reset-password-users')"
+                  >
                     <template #prepend>
                       <VIcon icon="tabler-lock-open-2" />
                     </template>
@@ -142,14 +159,19 @@
                   <VListItem
                     link
                     @click="enable2fa(item)"
-                    v-if="!item.enable_2fa"
+                    v-if="!item.enable_2fa && hasPermission('enable-2fa-users')"
                   >
                     <template #prepend>
                       <VIcon icon="tabler-shield-lock" />
                     </template>
                     <VListItemTitle>Enable 2FA</VListItemTitle>
                   </VListItem>
-                  <VListItem link @click="disable2fa(item)" v-else>
+                  <VListItem
+                    link
+                    @click="disable2fa(item)"
+                    v-else
+                    v-if="hasPermission('disable-2fa-users')"
+                  >
                     <template #prepend>
                       <VIcon icon="tabler-shield-cancel" />
                     </template>
@@ -159,13 +181,19 @@
                     link
                     @click="logoutUser(item)"
                     class="text-warning"
+                    v-if="hasPermission('logout-users')"
                   >
                     <template #prepend>
                       <VIcon icon="tabler-logout-2" />
                     </template>
                     <VListItemTitle>Logout</VListItemTitle>
                   </VListItem>
-                  <VListItem link @click="deleteUser(item)" class="text-error">
+                  <VListItem
+                    link
+                    @click="deleteUser(item)"
+                    class="text-error"
+                    v-if="hasPermission('delete-users')"
+                  >
                     <template #prepend>
                       <VIcon icon="tabler-trash" />
                     </template>
@@ -217,7 +245,7 @@
 
 <script setup>
 import axiosInstance from "@/utils/axiosInstance";
-import { formatDateDDMMYYHHMM } from "@/utils/format";
+import { formatDateBySelectedFormat } from "@/utils/format";
 import { onMounted, ref, watch } from "vue";
 
 import ConfirmDialog from "@/components/customs/confirm/ConfirmDialog.vue";
@@ -225,6 +253,7 @@ import CreateUserDialog from "@/components/customs/user/CreateUserDialog.vue";
 import ResetPasswordDialog from "@/components/customs/user/ResetPasswordDialog.vue";
 import UpdateUserDialog from "@/components/customs/user/UpdateUserDialog.vue";
 import UpdateUserPermissionDialog from "@/components/customs/user/UpdateUserPermissionDialog.vue";
+import { hasPermission } from "@/utils/hasPermission";
 import QRCodeVue from "qrcode.vue";
 
 const headers = [
@@ -375,7 +404,6 @@ const editUser = (user) => {
 };
 
 const editPermission = (user) => {
-  console.log("userrrr", user);
   updateUserId.value = user.id;
   dialogUpdatePermission.value = true;
 };

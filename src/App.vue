@@ -8,6 +8,7 @@ import axiosInstance from "./utils/axiosInstance";
 
 import Loading from "./components/customs/Loading.vue";
 import { useAuthStore } from "./stores/auth";
+import { useSystemConfigStore } from "./stores/config";
 
 import useSnackbar from "@/composables/useSnackbar";
 const { show, message, color } = useSnackbar();
@@ -23,11 +24,13 @@ const configStore = useConfigStore();
 //:::::::::::::::::::::::::::::::::::::::::::::::: FETCH PERMISSION
 
 const authStore = useAuthStore();
+const config = useSystemConfigStore();
 const loading = ref(false);
 onMounted(async () => {
   loading.value = true;
   try {
     const res = await axiosInstance.get("/auth/me");
+    await config.getConfig();
     authStore.setAuth(res.data);
   } catch (error) {
     console.error(error);

@@ -1,4 +1,4 @@
-export const defineThemeConfig = userConfig => {
+export const defineThemeConfig = (userConfig) => {
   return {
     themeConfig: userConfig,
     layoutConfig: {
@@ -36,5 +36,5 @@ export const defineThemeConfig = userConfig => {
         sectionTitlePlaceholder: userConfig.icons.sectionTitlePlaceholder,
       },
     },
-  }
-}
+  };
+};

@@ -3,7 +3,11 @@
   <VCard title="" :loading="loading">
     <div class="flex align-center justify-between mx-6">
       <h6 class="text-lg">Permission Management</h6>
-      <VBtn prepend-icon="tabler-plus" @click="dialogCreate = true">
+      <VBtn
+        prepend-icon="tabler-plus"
+        @click="dialogCreate = true"
+        v-if="hasPermission('create-module-setting')"
+      >
         Add Module
       </VBtn>
     </div>
@@ -22,6 +26,7 @@
             </div>
             <div class="d-flex align-center gap-1">
               <VSwitch
+                v-if="hasPermission('toggle-module-setting')"
                 :model-value="module.is_active"
                 @change="toggleModuleActive(module)"
                 color="success"
@@ -29,6 +34,7 @@
                 inset
               />
               <VBtn
+                v-if="hasPermission('delete-module-setting')"
                 icon="tabler-trash"
                 variant="text"
                 color="error"
@@ -69,6 +75,7 @@
 
                   <div class="d-flex align-center gap-1">
                     <VSwitch
+                      v-if="hasPermission('toggle-permission-setting')"
                       :model-value="permission.is_active"
                       @change="togglePermissionActive(permission)"
                       :disabled="!module.is_active"
@@ -78,6 +85,7 @@
                       inset
                     />
                     <VBtn
+                      v-if="hasPermission('delete-permission-setting')"
                       icon="tabler-trash"
                       variant="text"
                       color="error"
@@ -90,7 +98,8 @@
               <!-- Add Permission Button at the end of each module -->
               <VCol cols="12" md="6" lg="4">
                 <div
-                  class="d-flex align-center justify-center px-3 py-1 border-2 border-dashed border-grey-300 rounded-md bg-grey-25 hover:border-success hover:bg-success-50 transition-all duration-200 cursor-pointer"
+                  v-if="hasPermission('create-permission-setting')"
+                  class="d-flex border-[#7367F0] align-center justify-center px-3 py-1 border-2 border-dashed border-grey-300 rounded-md bg-grey-25 hover:border-success hover:bg-success-50 transition-all duration-200 cursor-pointer"
                   @click="onCreatePermissionDialog(module)"
                   :class="{
                     'opacity-50 cursor-not-allowed': !module.is_active,
@@ -100,7 +109,7 @@
                   <VBtn
                     prepend-icon="tabler-plus"
                     variant="text"
-                    color="success"
+                    color="primary"
                     size="small"
                     :disabled="!module.is_active"
                     @click="onCreatePermissionDialog(module)"
@@ -138,6 +147,7 @@ import ConfirmDialog from "@/components/customs/confirm/ConfirmDialog.vue";
 import CreateModuleDialog from "@/components/customs/settings/permission/CreateModuleDialog.vue";
 import CreatePermissionDialog from "@/components/customs/settings/permission/CreatePermissionDialog.vue";
 import axiosInstance from "@/utils/axiosInstance";
+import { hasPermission } from "@/utils/hasPermission";
 import { ref } from "vue";
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::: STATES
