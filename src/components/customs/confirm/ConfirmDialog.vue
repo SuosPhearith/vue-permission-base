@@ -87,164 +87,43 @@ defineExpose({ show });
 </script>
 
 <template>
-  <v-dialog v-model="dialog" max-width="440" persistent>
-    <v-card class="dialog-card" elevation="24">
-      <!-- Content Section -->
-      <div class="dialog-content">
-        <!-- Icon Container -->
-        <div
-          class="icon-container"
-          :style="{ backgroundColor: iconConfig.bgColor }"
-        >
-          <v-icon :color="iconConfig.color" size="46" class="icon">
-            {{ iconConfig.icon }}
-          </v-icon>
+  <VDialog v-model="dialog" max-width="440" persistent>
+    <VCard elevation="24">
+      <VCardText>
+        <div class="flex justify-center items-center flex-col mb-6">
+          <div
+            class="rounded-full w-[80px] h-[80px]"
+            :style="{ backgroundColor: iconConfig.bgColor }"
+          >
+            <v-icon :color="iconConfig.color" size="78" class="icon">
+              {{ iconConfig.icon }}
+            </v-icon>
+          </div>
+          <h2 class="text-lg font-bold mt-2">
+            {{ title }}
+          </h2>
+          <p class="dialog-message">
+            {{ message }}
+          </p>
         </div>
-
-        <!-- Title -->
-        <h2 class="dialog-title">
-          {{ title }}
-        </h2>
-
-        <!-- Message -->
-        <p class="dialog-message">
-          {{ message }}
-        </p>
-      </div>
-
-      <!-- Actions Section -->
-      <div class="dialog-actions">
-        <v-btn
-          class="action-btn cancel-btn"
-          variant="outlined"
-          @click="cancel"
-          size="large"
-        >
-          Cancel
-        </v-btn>
-        <v-btn
-          class="action-btn confirm-btn"
-          variant="flat"
-          @click="confirm"
-          size="large"
-          :style="{
-            backgroundColor: confirmButtonConfig.bgColor,
-            color: 'white',
-          }"
-        >
-          {{ confirmButtonConfig.text }}
-        </v-btn>
-      </div>
-    </v-card>
-  </v-dialog>
+        <div class="flex justify-center gap-1">
+          <VBtn class="w-1/2" variant="outlined" @click="cancel">
+            <VIcon start size="24" icon="tabler-x" />Cancel
+          </VBtn>
+          <VBtn
+            class="w-1/2"
+            variant="flat"
+            @click="confirm"
+            :style="{
+              backgroundColor: confirmButtonConfig.bgColor,
+              color: 'white',
+            }"
+          >
+            <VIcon start size="24" icon="tabler-check" />
+            {{ confirmButtonConfig.text }}
+          </VBtn>
+        </div>
+      </VCardText>
+    </VCard>
+  </VDialog>
 </template>
-
-<style scoped>
-.dialog-card {
-  border-radius: 16px !important;
-  border: none;
-  overflow: hidden;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
-}
-
-.dialog-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 32px 24px 24px;
-}
-
-.icon-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  margin-bottom: 20px;
-}
-
-.icon {
-  flex-shrink: 0;
-}
-
-.dialog-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: #111827;
-  margin: 0 0 12px 0;
-  line-height: 1.3;
-}
-
-.dialog-message {
-  font-size: 15px;
-  color: #6b7280;
-  margin: 0;
-  line-height: 1.5;
-  max-width: 320px;
-}
-
-.dialog-actions {
-  display: flex;
-  gap: 12px;
-  padding: 0 24px 24px;
-}
-
-.action-btn {
-  flex: 1;
-  height: 44px !important;
-  border-radius: 8px !important;
-  font-size: 15px !important;
-  font-weight: 500 !important;
-  text-transform: none !important;
-  letter-spacing: 0 !important;
-  box-shadow: none !important;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-.cancel-btn {
-  color: #6b7280 !important;
-  border-color: #d1d5db !important;
-  background-color: transparent !important;
-}
-
-.cancel-btn:hover {
-  background-color: #f9fafb !important;
-  border-color: #9ca3af !important;
-}
-
-.confirm-btn {
-  position: relative;
-  overflow: hidden;
-}
-
-.confirm-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-}
-
-.confirm-btn:active {
-  transform: translateY(0);
-}
-
-/* Responsive adjustments */
-@media (max-width: 480px) {
-  .dialog-content {
-    padding: 24px 20px 20px;
-  }
-
-  .dialog-actions {
-    flex-direction: column;
-    padding: 0 20px 20px;
-  }
-
-  .action-btn {
-    flex: none;
-  }
-
-  .dialog-message {
-    font-size: 14px;
-  }
-}
-</style>

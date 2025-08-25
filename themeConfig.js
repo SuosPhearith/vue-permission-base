@@ -18,12 +18,12 @@ let config = localStorage.getItem("config")
 
 export const { themeConfig, layoutConfig } = defineThemeConfig({
   app: {
-    title: config?.app_config?.app_name ?? "Pharmacy",
+    title: config?.app_config?.app_name ?? "MCC",
     logo: h("div", {
       innerHTML: logo,
       style: "line-height:0; color: rgb(var(--v-global-theme-primary))",
     }),
-    contentWidth: ContentWidth.Boxed,
+    contentWidth: ContentWidth.Fluid,
     contentLayoutNav:
       config?.app_config?.layout === "vertical"
         ? AppContentLayoutNav.Vertical

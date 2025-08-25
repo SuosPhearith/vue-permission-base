@@ -90,6 +90,19 @@
           </div>
         </template>
 
+        <template #item.email="{ item }">
+          <div class="flex items-center gap-2">
+            <VIcon icon="tabler-mail" size="16" />
+            <!-- Tabler email icon -->
+            <span>{{ item.email }}</span>
+          </div>
+          <small class="flex items-center gap-2">
+            <VIcon icon="tabler-phone" size="14" />
+            <!-- Tabler phone icon -->
+            {{ item.phone_number }}
+          </small>
+        </template>
+
         <template #item.created_at="{ item }">
           <span>{{ formatDateBySelectedFormat(item.created_at) }}</span>
         </template>
@@ -263,7 +276,7 @@ const headers = [
     sortable: false,
   },
   {
-    title: "EMAIL",
+    title: "EMAIL & PHONE",
     key: "email",
     sortable: false,
   },

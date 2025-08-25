@@ -40,7 +40,9 @@ axiosInstance.interceptors.response.use(
   },
   async (error) => {
     const { response } = error;
-    trigger(response.data.message || "Something when wrong.", "error");
+    if (response.status !== 401) {
+      trigger(response.data.error || "Something when wrong.", "error");
+    }
     if (response) {
       const { status, data } = response;
 
@@ -49,13 +51,12 @@ axiosInstance.interceptors.response.use(
         case 401:
           console.warn("Unauthorized - maybe token expired");
           // ::::::::::::::::::::::::::::::::::::::::::::::::: PUSH TO LOGIN SCREEN
-          router.push("/login");
+          router.push(`/login${window.location.search}`);
           break;
 
         case 403:
           console.warn("Forbidden - you do not have access");
           // ::::::::::::::::::::::::::::::::::::::::::::::::: PUSH TO LOGIN SCREEN
-          router.push("/login");
           break;
 
         case 404:
