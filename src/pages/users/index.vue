@@ -34,7 +34,6 @@
 
           <VCol cols="12" sm="4">
             <VTextField
-              width="300"
               v-model="searchQuery"
               variant="outlined"
               label="Search User"
@@ -45,6 +44,7 @@
           <VCol cols="12" sm="2">
             <VBtn
               prepend-icon="tabler-plus"
+              block
               @click="dialogCreate = true"
               v-if="hasPermission('create-users')"
             >
